@@ -68,25 +68,27 @@ spec:
         effect: "NoSchedule"
       shareProcessNamespace: true
       containers:
-        - name: worker
-          image: nnf-mfu:latest
-          command: 
-            - /usr/sbin/sshd
-          args:
-            - -De
-          securityContext:
-            privileged: true
-            capabilities:
-              add: ["SETUID", "SETGID", "MKNOD"]
-        - name: manager
-          command: 
-          - /manager
-          args:
-          - --leader-elect=false
-          - --controller=node
-          image: controller:latest
-          env:
-            - name: NNF_NODE_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
+      - name: worker
+        image: nnf-mfu:latest
+        command:
+        - /usr/sbin/sshd
+        args:
+        - -De
+        securityContext:
+          privileged: true
+          capabilities:
+            add: ["SETUID", "SETGID", "MKNOD"]
+      - name: manager
+        command:
+        - /manager
+        args:
+        - --leader-elect=false
+        - --controller=node
+        image: controller:latest
+        securityContext:
+          privileged: true
+        env:
+        - name: NNF_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
